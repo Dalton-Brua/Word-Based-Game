@@ -3,11 +3,12 @@
 class Door {
 
 private:
-	bool locked;
+	bool locked = false;
 	bool isLocked();
 
 public:
-	Door();
-	void travel(Door, Door);
+	Door() {};
+	Door(bool l);
+	void travel(Door door);
 
 };

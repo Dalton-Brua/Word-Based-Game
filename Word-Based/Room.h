@@ -1,19 +1,20 @@
 #pragma once
-#include <string>
 #include <vector>
 #include "Door.h"
 #include "Item.h"
+using namespace std;
 
 class Room {
 
-	string name;
-	string description;
+	string name = "";
+	string description = "";
 	Door doors[8];
 
 	vector<Item> items;
 
+
 public:
-	Room(string, string);
+	Room(string name, string description);
 	void addItem(Item);
 
 };
