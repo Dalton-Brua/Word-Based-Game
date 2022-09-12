@@ -1,8 +1,7 @@
 #include "Door.h"
-
-void Door::travel(Door door) {
-
-}
+#include "Player.h"
+#include "Room.h"
+#include "Item.h"
 
 bool Door::isLocked() {
 	return this->locked;
@@ -11,3 +10,13 @@ bool Door::isLocked() {
 Door::Door(bool l) {
 	locked = l;
 }
+
+void Door::unlock(Door doorToUnlock) {
+
+}
+
+void Door::lock(Door doorToLock) {
+
+}
+
+

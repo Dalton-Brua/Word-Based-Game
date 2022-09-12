@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include "Door.h"
 using namespace std;
 
 class Item {
@@ -9,10 +8,11 @@ class Item {
 	string description;
 
 public:
+	Item() {};
 	Item(string n, string d);
 
 };
 
 class Key : Item {
-	Door doorToUnlock;
+	
 };

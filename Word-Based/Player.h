@@ -1,12 +1,17 @@
 #pragma once
 #include "Item.h"
 #include "Room.h"
-#include <vector>
 
 class Player {
 
-	Room currRoom;
+	Room* prevRoom;
+	Room* currRoom;
 	Item hand;
 	vector<Key> keys;
+
+public:
+	Player(Room* room);
+	bool travel(Direction d);
+	Room* getRoom();
 
 };
