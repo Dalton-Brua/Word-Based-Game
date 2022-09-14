@@ -20,8 +20,10 @@ public:
 	void link(Room* dest, Direction d);
 	Room* getDoor(Direction d);
 	void addItem(Item* item);
+	void removeItem(int index);
 	Room* getRoom(Direction d);
 	string getDescription();
 	string getName();
+	vector<Item*> getItems();
 
 };

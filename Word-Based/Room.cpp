@@ -7,6 +7,12 @@ void Room::addItem(Item* item) {
 	this->items.push_back(item);
 }
 
+void Room::removeItem(int i) {
+	items.shrink_to_fit();
+	items.at(i) = items.at(items.size() - 1);
+	items.pop_back();
+}
+
 Room::Room(string n, string d) {
 	this->name = n;
 	this->description = d;
@@ -39,4 +45,8 @@ string Room::getName() {
 
 Room* Room::getRoom(Direction d) {
 	return this->doors[d];
+}
+
+vector<Item*> Room::getItems() {
+	return this->items;
 }

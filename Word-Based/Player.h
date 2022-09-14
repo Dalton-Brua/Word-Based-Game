@@ -6,12 +6,15 @@ class Player {
 
 	Room* prevRoom;
 	Room* currRoom;
-	Item hand;
-	vector<Key> keys;
+	vector<Item*> inventory;
+	vector<Key*> keys;
 
 public:
 	Player(Room* room);
 	bool travel(Direction d);
 	Room* getRoom();
+	void take(Item* item);
+	void drop(int i);
+	vector<Item*> getInventory();
 
 };
