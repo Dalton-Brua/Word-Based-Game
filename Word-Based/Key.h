@@ -3,6 +3,6 @@
 #include "Room.h"
 
 struct Key : Item {
-	Room* roomToUnlock;
+	Room* roomToUnlock = nullptr;
 	Key(Room* room) { roomToUnlock = room; }
 };

@@ -14,9 +14,4 @@ public:
 	bool isFurniture();
 	string getName();
 	string getDescription();
-
-};
-
-class Key : Item {
-	
 };

@@ -1,5 +1,6 @@
 #include "Room.h"
 #include "Direction.h"
+#include "Person.h"
 #include <vector>
 using namespace std;
 
@@ -11,6 +12,16 @@ void Room::removeItem(int i) {
 	items.shrink_to_fit();
 	items.at(i) = items.at(items.size() - 1);
 	items.pop_back();
+}
+
+void Room::addPerson(Person* person) {
+	this->people.push_back(person);
+}
+
+void Room::removePerson(int i) {
+	people.shrink_to_fit();
+	people.at(i) = people .at(people.size() - 1);
+	people.pop_back();
 }
 
 Room::Room(string n, string d) {
@@ -49,4 +60,8 @@ Room* Room::getRoom(Direction d) {
 
 vector<Item*> Room::getItems() {
 	return this->items;
+}
+
+vector<Person*> Room::getPeople() {
+	return this->people;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "Item.h"
 #include "Room.h"
+#include "Key.h"
 
 class Player {
 

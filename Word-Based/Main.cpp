@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include "Room.h"
 #include "Item.h"
+#include "Key.h"
+#include "Person.h"
 #include "Player.h"
 #include "Lore.h"
 
@@ -23,15 +25,29 @@ int main() {
 	Room* northBath = new Room("North Bathrooms", lore->northBathDescription);
 	Room* docRoom = new Room("Doctor's Room", lore->docRoomDescription);
 
-	Item* docWindow = new Item("Window", lore->docWindowDescription, false);
+	
+
+	Person* Doctor = new Person("Doctor", lore->docDescription, lore->docConversation);
+	Item* syringe = new Item("Syringe", lore->syringeDescription, false);
+	Item* deadBody = new Item("Body", lore->northBathCorpse, true);
+	
+	Item* docWindow = new Item("Window", lore->docWindowDescription, true);
 
 	detRoom->link(NHall, E);
 	NHall->link(northBath, NE);
 	NHall->link(docRoom, SW);
 
+
 	docRoom->addItem(docWindow);
+	
+	northBath->addPerson(Doctor);
+	northBath->addItem(syringe);
+	northBath->addItem(deadBody);
 
 	Player* player = new Player(detRoom);
+
+	cout << lore->introduction;
+	cout << lore->detRoomDescription;
 
 	while (!gameover) {
 
@@ -69,19 +85,50 @@ int main() {
 		}
 		else if (command == "EXAMINE") {
 			vector<Item*> items = player->getRoom()->getItems();
+			bool found = false;
+			int foundAt = 0;
 			if (items.size() == 0) cout << "There is no " << origDest << endl;
 			for (int i = 0; i < items.size(); i++) {
 				string name = items.at(i)->getName();
 				transform(name.begin(), name.end(), name.begin(), ::toupper);
 				if (name == dest) {
-					cout << items.at(i)->getDescription() << endl;
-					continue;
+					found = true;
+					foundAt = i;
+					break;
 				}
+			}
+			if (found == true) {
+				cout << items.at(foundAt)->getDescription() << endl;
+			}
+			else {
 				cout << "There is no " << origDest << endl;
 			}
 		}
+		else if (command == "TALK") {
+			vector<Person*> people = player->getRoom()->getPeople();
+			bool found = false;
+			int foundAt = 0;
+			if (people.size() == 0) cout << "There is no one to talk to" << endl;
+			for (int i = 0; i < people.size(); i++) {
+				string name = people.at(i)->getName();
+				transform(name.begin(), name.end(), name.begin(), ::toupper);
+				if (name == dest) {
+					found = true;
+					foundAt = i;
+					break;
+				}
+			}
+			if (found == true) {
+				cout << people.at(foundAt)->getDialogue() << endl;
+			}
+			else {
+				cout << "There is no " << origDest << " to talk to" << endl;
+			}
+			
+		}
 		else if (command == "TAKE") {
 			vector<Item*> items = player->getRoom()->getItems();
+			bool found = false;
 			if (items.size() == 0) {
 				cout << "There is no " << origDest << endl;
 				continue;
@@ -90,6 +137,7 @@ int main() {
 				string name = items.at(i)->getName();
 				transform(name.begin(), name.end(), name.begin(), ::toupper);
 				if (name == dest) {
+					found = true;
 					if (!items.at(i)->isFurniture()) {
 						player->take(items.at(i));
 						player->getRoom()->removeItem(i);
@@ -98,9 +146,12 @@ int main() {
 					}
 					else {
 						cout << "You cannot pick that up" << endl;
+						break;
 					}
 				}
-				cout << "There is no " << origDest << endl;
+				if (found == false) {
+					cout << "There is no " << origDest << endl;
+				}
 			}
 		}
 		else if (command == "DROP") {
@@ -174,49 +225,60 @@ int main() {
 			if (dest == "N") {
 				if (!player->travel(N)) {
 					cout << "There is no room that way" << endl;
+					continue;
 				}
 			}
 			if (dest == "NE") {
 				if (!player->travel(NE)) {
 					cout << "There is no room that way" << endl;
+					continue;
 				}
 			}
 			if (dest == "E") {
 				if (!player->travel(E)) {
 					cout << "There is no room that way" << endl;
+					continue;
 				}
 			}
 			if (dest == "SE") {
 				if (!player->travel(SE)) {
 					cout << "There is no room that way" << endl;
+					continue;
 				}
 			}
 			if (dest == "S") {
 				if (!player->travel(S)) {
 					cout << "There is no room that way" << endl;
+					continue;
 				}
 			}
 			if (dest == "SW") {
 				if (!player->travel(SW)) {
 					cout << "There is no room that way" << endl;
+					continue;
 				}
 			}
 			if (dest == "W") {
 				if (!player->travel(W)) {
 					cout << "There is no room that way" << endl;
+					continue;
 				}
 			}
 			if (dest == "NW") {
 				if (!player->travel(NW)) {
 					cout << "There is no room that way" << endl;
+					continue;
 				}
 			}
+			cout << player->getRoom()->getName() << endl;
 		}
 		else if (command == "HELP") {
 			cout << "Commands: " << endl;
 			cout << "MOVE - Travels in a specified direction" << endl;
 			cout << "EXAMINE - Prints the description of an item in the room" << endl;
 			cout << "TAKE - Takes an item and puts it in your inventory" << endl;
+			cout << "DROP - Takes an item out of your inventory and puts it in the room" << endl;
+			cout << "Inventory - Prints out the items in your inventory" << endl;
 			cout << "LOOK - Prints the description of the room" << endl;
 			cout << "DOORS - Lists all the directions out of the room" << endl;
 			cout << "ROOM - Prints the name of the room you are in" << endl;
