@@ -4,9 +4,11 @@ using namespace std;
 
 class Item {
 
+	bool furniture;
+
+protected:
 	string name;
 	string description;
-	bool furniture;
 
 public:
 	Item() {};

@@ -4,15 +4,13 @@
 
 class Person : public Item {
 
-	string name;
-	string description;
 	string dialogue;
 
 public:
 	Person(string n, string d, string di) {
-		this->dialogue = di;
-		this->name = n;
 		this->description = d;
+		this->name = n;
+		this->dialogue = di;
 	}
 
 	string getName() {
