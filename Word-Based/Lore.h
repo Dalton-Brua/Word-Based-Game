@@ -24,4 +24,9 @@ struct Lore {
 	string butRoomDescription = "\nThe room is immaculate, everything is neat and orderly and there isn't a speck of dust in sight. There is a frail, anxious looking man sitting in a chair in the corner of the room, facing the door.\n";
 	string butDescription = "\nA meek man who looks as though they are in a perpetual state of nervousness. He has some nice slacks with a small sloth hanging over his arm. You deduce that this man is probably the butler to a well-off person.\n";
 	string butConversation = "\nYou: Hello, do you know what happened?\nButler: I-I-I'm not s-s-sure of w-what you sp-speak.\nYou: Alright, nevermind then.\n";
+	string kitchenDescription = "\nThis looks like a pretty standard kitchen. You've got some ovens and stoves, pots and pans hanging, and your tools, like knives and spatulas on the counter. There is a chef at one of the workstations.\n";
+	string chefDescription = "\nThe chef has a chef's hat on with a white apron and he looks to be making some sort of stew.\n";
+	string chefConverstaion = "\nYou: Hello, do you know what happened?\n Chef: I'm not sure what you're talking about\nYou: Have you seen anything suspicious recently?\nChef: That engineer has been sitting out in the dining room for a while, but I'm not sure that is what you're looking for.\nYou: That's alright, thanks.\n";
+	string knivesDescription = "\nYou look at the knife holder on the counter, there seems to be one missing.\n";
+	string keyDescription = "\nA room key, you have one just like it, but for your own room.\n";
 };

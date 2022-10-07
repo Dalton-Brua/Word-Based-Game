@@ -2,10 +2,8 @@
 #include <algorithm>
 #include <string>
 #include <stdio.h>
+#include <map>
 #include "Room.h"
-#include "Item.h"
-#include "Key.h"
-#include "Person.h"
 #include "Player.h"
 #include "Lore.h"
 
@@ -17,6 +15,12 @@ int main() {
 	string input = "";
 	string command;
 	string dest;
+
+	map<string, Direction> const directions = {
+		{"N", N}, {"NE", NE},
+		{"E", E}, {"SE", SE},
+		{"S", SE}, {"SW", SW},
+		{"W", W}, {"NW", NW} };
 	
 	Lore* lore = new Lore();
 	
@@ -26,12 +30,16 @@ int main() {
 	Room* docRoom = new Room("Doctor's Room", lore->docRoomDescription);
 	Room* diningRoom = new Room("Dining Room", lore->diningDescription);
 	Room* butRoom = new Room("Butler's Room", lore->butRoomDescription);
+	Room* kitchen = new Room("Kitchen", lore->kitchenDescription);
 
 	Person* Doctor = new Person("Doctor", lore->docDescription, lore->docConversation);
 	Person* Engineer = new Person("Engineer", lore->engDescription, lore->engConversation);
 	Person* Butler = new Person("Butler", lore->butDescription, lore->butConversation);
+	Person* Chef = new Person("Chef", lore->chefDescription, lore->chefConverstaion);
+
 	Item* syringe = new Item("Syringe", lore->syringeDescription, false);
 	Item* wrench = new Item("Wrench", lore->wrenchDescription, false);
+	
 	
 	Item* deadBody = new Item("Body", lore->northBathCorpse, true);
 	Item* docWindow = new Item("Window", lore->docWindowDescription, true);
@@ -39,12 +47,16 @@ int main() {
 	Item* docDresser = new Item("Dresser", lore->docDresserDescription, true);
 	Item* docSatchel = new Item("Satchel", lore->docSatchelDescription, true);
 	Item* booths = new Item("Booths", lore->boothDescription, true);
+	Item* knives = new Item("Knives", lore->knivesDescription, true);
+
+	Item* butRoomKey = new Item("Butler's Room Key", lore->keyDescription, false, true);
 
 	detRoom->link(NHall, W);
 	NHall->link(northBath, NW);
 	NHall->link(docRoom, SE);
 	NHall->link(diningRoom, S);
-	// NHall->link(butRoom, NE);
+	NHall->link(butRoom, NE);
+	diningRoom->link(kitchen, E);
 
 	docRoom->addItem(docWindow);
 	docRoom->addItem(docBed);
@@ -63,8 +75,17 @@ int main() {
 
 	butRoom->addPerson(Butler);
 	butRoom->addItem(Butler);
+
+	kitchen->addPerson(Chef);
+	kitchen->addItem(Chef);
+	kitchen->addItem(knives);
+
+	butRoom->lock();
 	
 	Player* player = new Player(detRoom);
+
+	// map<string, Item*> const keys = { 
+	//	{butRoom->getName(), butRoomKey}};
 
 	cout << lore->introduction;
 	cout << lore->detRoomDescription << endl;
@@ -157,36 +178,48 @@ int main() {
 			
 		}
 		else if (command == "TAKE") {
-			vector<Item*> items = player->getRoom()->getItems();
-			bool found = false;
 			if (dest == "") {
 				cout << "You took nothing in particular\n" << endl;
 				continue;
 			}
+			vector<Item*> items = player->getRoom()->getItems();
+
 			if (items.size() == 0) {
 				cout << "There is no " << origDest << "\n" << endl;
 				continue;
 			}
-			for (int i = 0; i < items.size(); i++) {
-				string name = items.at(i)->getName();
-				transform(name.begin(), name.end(), name.begin(), ::toupper);
-				if (name == dest) {
-					found = true;
-					if (!items.at(i)->isFurniture()) {
-
-						player->take(items.at(i));
-						player->getRoom()->removeItem(i);
-
-						cout << "You have picked up " << origDest << "\n" << endl;
-
-						if (name == "SYRINGE" || name == "LETTER" || name == "HAMMER") {
-							clues++;
+			
+			else {
+				bool found = false;
+				for (int i = 0; i < items.size(); i++) {
+					string name = items.at(i)->getName();
+					transform(name.begin(), name.end(), name.begin(), ::toupper);
+					if (dest == "KEY") {
+						if (items.at(i)->isKey()) {
+							found = true;
+							player->take(items.at(i));
+							player->getRoom()->removeItem(i);
+							cout << "You have picked up " << origDest << "\n" << endl;
+							break;
 						}
-						break;
 					}
-					else {
-						cout << "You cannot pick that up\n" << endl;
-						break;
+					if (name == dest) {
+						found = true;
+						if (!items.at(i)->isFurniture()) {
+
+							player->take(items.at(i));
+							player->getRoom()->removeItem(i);
+
+							cout << "You have picked up " << origDest << "\n" << endl;
+							if (name == "SYRINGE" || name == "LETTER" || name == "HAMMER") {
+								clues++;
+							}
+							break;
+						}
+						else {
+							cout << "You cannot pick that up\n" << endl;
+							break;
+						}
 					}
 				}
 				if (found == false) {
@@ -273,59 +306,82 @@ int main() {
 			cout << "\n";
 		}
 		else if (command == "MOVE") {
-		if (dest == "") {
-			cout << "You moved nowhere in particular\n" << endl;
-			continue;
+			if (dest == "") {
+				cout << "You moved nowhere in particular\n" << endl;
+				continue;
+			}
+			if (!directions.count(dest)) {
+				cout << "That is not a direction\n" << endl;
+				continue;
+			}
+			switch (player->travel(directions.at(dest))) {
+				case 0:
+					cout << "There is no room that way\n" << endl;
+					break;
+				case 1:
+					cout << "That room is locked\n" << endl;
+					break;
+				case 2:
+					cout << player->getRoom()->getName() << "\n" << endl;
+					break;
+			}	
 		}
-			if (dest == "N") {
-				if (!player->travel(N)) {
-					cout << "There is no room that way\n" << endl;
-					continue;
-				}
+		else if (command == "LOCK") {
+			if (dest == "") {
+				cout << "You lock nothing in particular\n" << endl;
+				continue;
 			}
-			if (dest == "NE") {
-				if (!player->travel(NE)) {
-					cout << "There is no room that way\n" << endl;
-					continue;
-				}
+			if (!directions.count(dest)) {
+				cout << "That is not a direction\n" << endl;
+				continue;
 			}
-			if (dest == "E") {
-				if (!player->travel(E)) {
-					cout << "There is no room that way\n" << endl;
-					continue;
-				}
+			Room* room = player->getRoom()->getRoom(directions.at(dest));
+			if (room == nullptr) {
+				cout << "There is no room that way\n" << endl;
+				continue;
 			}
-			if (dest == "SE") {
-				if (!player->travel(SE)) {
-					cout << "There is no room that way\n" << endl;
-					continue;
-				}
+			vector<Item*> items = player->getRoom()->getItems();
+			if (items.size() == 0) {
+				cout << "You do not have the key to the " + room->getName() + "\n" << endl;
+				continue;
 			}
-			if (dest == "S") {
-				if (!player->travel(S)) {
-					cout << "There is no room that way\n" << endl;
-					continue;
-				}
+			if (!keys.count(room->getName())) {
+				cout << "You do not have the key to lock the " + room->getName() + "\n" << endl;
+				continue;
 			}
-			if (dest == "SW") {
-				if (!player->travel(SW)) {
-					cout << "There is no room that way\n" << endl;
-					continue;
-				}
+			if (room->isLocked()) {
+				cout << "That door is already locked\n" << endl;
+				continue;
 			}
-			if (dest == "W") {
-				if (!player->travel(W)) {
-					cout << "There is no room that way\n" << endl;
-					continue;
-				}
+			room->lock();
+			cout << "You have locked the door to the " + room->getName() + "\n" << endl;
+
+		} 
+		else if (command == "UNLOCK") {
+			if (dest == "") {
+				cout << "You unlock nothing in particular\n" << endl;
+				continue;
 			}
-			if (dest == "NW") {
-				if (!player->travel(NW)) {
-					cout << "There is no room that way\n" << endl;
-					continue;
-				}
+			if (!directions.count(dest)) {
+				cout << "That is not a direction\n" << endl;
+				continue;
 			}
-			cout << player->getRoom()->getName() << "\n" << endl;
+			Room* room = player->getRoom()->getRoom(directions.at(dest));
+			if (room == nullptr) {
+				cout << "There is no room that way\n" << endl;
+				continue;
+			}
+			if (!keys.count(room->getName())) {
+				cout << "You do not have the key to unlock the " + room->getName() + "\n" << endl;
+				continue;
+			}
+			if (!room->isLocked()) {
+				cout << "That door is already unlocked\n" << endl;
+				continue;
+			}
+			room->unlock();
+			cout << "You have unlocked the door to the " + room->getName() + "\n" << endl;
+
 		}
 		else if (command == "CLUES") {
 		cout << "Clues found " << clues << "/5\n" << endl;
@@ -340,6 +396,7 @@ int main() {
 			cout << "LOOK - Prints the description of the room" << endl;
 			cout << "DOORS - Lists all the directions out of the room" << endl;
 			cout << "ROOM - Prints the name of the room you are in" << endl;
+			cout << "LOCK/UNLOCK - Locks or unlocks a room if you have the key to the room in that particular direction" << endl;
 			cout << "CLUES - Tells you how many clues you have found and how many you have left\n" << endl;
 		}
 	}

@@ -1,18 +1,16 @@
 #pragma once
 #include "Item.h"
 #include "Room.h"
-#include "Key.h"
 
 class Player {
 
 	Room* prevRoom;
 	Room* currRoom;
 	vector<Item*> inventory;
-	vector<Key*> keys;
 
 public:
 	Player(Room* room);
-	bool travel(Direction d);
+	int travel(Direction d);
 	Room* getRoom();
 	void take(Item* item);
 	void drop(int i);

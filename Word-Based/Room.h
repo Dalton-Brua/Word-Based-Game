@@ -13,6 +13,8 @@ class Room {
 	vector<Item*> items;
 	vector<Person*> people;
 
+	bool locked = false;
+
 
 public:
 	Room* doors[8];
@@ -30,5 +32,8 @@ public:
 	string getName();
 	vector<Item*> getItems();
 	vector<Person*> getPeople();
+	void lock();
+	void unlock();
+	bool isLocked();
 
 };

@@ -135,7 +135,6 @@
   <ItemGroup>
     <ClInclude Include="Direction.h" />
     <ClInclude Include="Item.h" />
-    <ClInclude Include="Key.h" />
     <ClInclude Include="Lore.h" />
     <ClInclude Include="Person.h" />
     <ClInclude Include="Player.h" />

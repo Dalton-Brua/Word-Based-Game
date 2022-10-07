@@ -5,13 +5,16 @@ Player::Player(Room* room) {
 	currRoom = room;
 	prevRoom = nullptr;
 }
-bool Player::travel(Direction d) {
+int Player::travel(Direction d) {
 	if (this->currRoom->getRoom(d) == nullptr) {
-		return false;
+		return 0;
+	}
+	if (this->currRoom->getRoom(d)->isLocked()) {
+		return 1;
 	}
 	this->prevRoom = this->currRoom;
 	this->currRoom = currRoom->getRoom(d);
-	return true;
+	return 2;
 }
 
 Room* Player::getRoom() {

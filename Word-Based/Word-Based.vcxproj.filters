@@ -44,9 +44,6 @@
     <ClInclude Include="Lore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Key.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Person.h">
       <Filter>Header Files</Filter>
     </ClInclude>

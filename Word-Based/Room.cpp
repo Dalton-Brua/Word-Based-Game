@@ -65,3 +65,15 @@ vector<Item*> Room::getItems() {
 vector<Person*> Room::getPeople() {
 	return this->people;
 }
+
+void Room::lock() {
+	this->locked = true;
+}
+
+void Room::unlock() {
+	this->locked = false;
+}
+
+bool Room::isLocked() {
+	return this->locked;
+}
