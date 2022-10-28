@@ -42,6 +42,10 @@ void Room::link(Room* roomToLink, Direction d) {
 	roomToLink->doors[(d + 4) % 8] = this;
 }
 
+void Room::setKey(Item* key) {
+	this->roomKey = key;
+}
+
 Room* Room::getDoor(Direction d) {
 	return this->doors[d];
 }
@@ -64,6 +68,10 @@ vector<Item*> Room::getItems() {
 
 vector<Person*> Room::getPeople() {
 	return this->people;
+}
+
+Item* Room::getKey() {
+	return this->roomKey;
 }
 
 void Room::lock() {

@@ -11,6 +11,7 @@ class Room {
 	string description = "";
 
 	vector<Item*> items;
+	Item* roomKey;
 	vector<Person*> people;
 
 	bool locked = false;
@@ -27,6 +28,8 @@ public:
 	void removeItem(int index);
 	void addPerson(Person* person);
 	void removePerson(int index);
+	void setKey(Item* key);
+	Item* getKey();
 	Room* getRoom(Direction d);
 	string getDescription();
 	string getName();

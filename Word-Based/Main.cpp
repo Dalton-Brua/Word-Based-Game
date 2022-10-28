@@ -51,6 +51,8 @@ int main() {
 
 	Item* butRoomKey = new Item("Butler's Room Key", lore->keyDescription, false, true);
 
+	butRoom->setKey(butRoomKey);
+
 	detRoom->link(NHall, W);
 	NHall->link(northBath, NW);
 	NHall->link(docRoom, SE);
@@ -81,11 +83,8 @@ int main() {
 	kitchen->addItem(knives);
 
 	butRoom->lock();
-	
+		
 	Player* player = new Player(detRoom);
-
-	// map<string, Item*> const keys = { 
-	//	{butRoom->getName(), butRoomKey}};
 
 	cout << lore->introduction;
 	cout << lore->detRoomDescription << endl;
@@ -340,12 +339,12 @@ int main() {
 				cout << "There is no room that way\n" << endl;
 				continue;
 			}
-			vector<Item*> items = player->getRoom()->getItems();
+			vector<Item*> items = player->getInventory();
 			if (items.size() == 0) {
-				cout << "You do not have the key to the " + room->getName() + "\n" << endl;
+				cout << "You do not have the key to lock the " + room->getName() + "\n" << endl;
 				continue;
 			}
-			if (!keys.count(room->getName())) {
+			if (!count(items.begin(), items.end(), room->getKey())) {
 				cout << "You do not have the key to lock the " + room->getName() + "\n" << endl;
 				continue;
 			}
@@ -356,7 +355,7 @@ int main() {
 			room->lock();
 			cout << "You have locked the door to the " + room->getName() + "\n" << endl;
 
-		} 
+		}
 		else if (command == "UNLOCK") {
 			if (dest == "") {
 				cout << "You unlock nothing in particular\n" << endl;
@@ -371,7 +370,11 @@ int main() {
 				cout << "There is no room that way\n" << endl;
 				continue;
 			}
-			if (!keys.count(room->getName())) {
+			vector<Item*> items = player->getInventory();
+			if (items.size() == 0) {
+				cout << "You do not have the key to unlock the " + room->getName() + "\n" << endl;
+			}
+			if (!count(items.begin(), items.end(), room->getKey())) {
 				cout << "You do not have the key to unlock the " + room->getName() + "\n" << endl;
 				continue;
 			}
