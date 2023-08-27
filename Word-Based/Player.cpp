@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "Direction.h"
 
 Player::Player(Room* room) {
 	currRoom = room;
@@ -12,8 +11,8 @@ int Player::travel(Direction d) {
 	if (this->currRoom->getRoom(d)->isLocked()) {
 		return 1;
 	}
-	this->prevRoom = this->currRoom;
 	this->currRoom = currRoom->getRoom(d);
+	this->currRoom->setDiscovered();
 	return 2;
 }
 

@@ -1,9 +1,8 @@
 #include <iostream>
 #include <algorithm>
-#include <string>
 #include <stdio.h>
+#include <string>
 #include <map>
-#include "Room.h"
 #include "Player.h"
 #include "Lore.h"
 
@@ -19,27 +18,31 @@ int main() {
 	map<string, Direction> const directions = {
 		{"N", N}, {"NE", NE},
 		{"E", E}, {"SE", SE},
-		{"S", SE}, {"SW", SW},
+		{"S", S}, {"SW", SW},
 		{"W", W}, {"NW", NW} };
 	
 	Lore* lore = new Lore();
 	
-	Room* detRoom = new Room("Detective's Room", lore->detRoomDescription);
+	Room* detRoom = new Room("Detective's Room", lore->detRoomDescription, true);
 	Room* NHall = new Room("North Hallway", lore->NHallDescription);
 	Room* northBath = new Room("North Bathrooms", lore->northBathDescription);
 	Room* docRoom = new Room("Doctor's Room", lore->docRoomDescription);
 	Room* diningRoom = new Room("Dining Room", lore->diningDescription);
 	Room* butRoom = new Room("Butler's Room", lore->butRoomDescription);
 	Room* kitchen = new Room("Kitchen", lore->kitchenDescription);
+	Room* SHall = new Room("South Hallway", lore->SHallDescription);
+	Room* lawyerRoom = new Room("Lawyer's Room", lore->lawyerRoomDescription);
+	Room* ceoRoom = new Room("CEO's Room", lore->ceoRoomDescription);
 
 	Person* Doctor = new Person("Doctor", lore->docDescription, lore->docConversation);
 	Person* Engineer = new Person("Engineer", lore->engDescription, lore->engConversation);
 	Person* Butler = new Person("Butler", lore->butDescription, lore->butConversation);
-	Person* Chef = new Person("Chef", lore->chefDescription, lore->chefConverstaion);
+	Person* Chef = new Person("Chef", lore->chefDescription, lore->chefConversation);
+	Person* Lawyer = new Person("Lawyer", lore->lawyerDescription, lore->lawyerConversation);
+	Person* CEO = new Person("CEO", lore->ceoDescription, lore->ceoConversation);
 
 	Item* syringe = new Item("Syringe", lore->syringeDescription, false);
 	Item* wrench = new Item("Wrench", lore->wrenchDescription, false);
-	
 	
 	Item* deadBody = new Item("Body", lore->northBathCorpse, true);
 	Item* docWindow = new Item("Window", lore->docWindowDescription, true);
@@ -59,6 +62,9 @@ int main() {
 	NHall->link(diningRoom, S);
 	NHall->link(butRoom, NE);
 	diningRoom->link(kitchen, E);
+	diningRoom->link(SHall, S);
+	SHall->link(ceoRoom, NE);
+	SHall->link(lawyerRoom, E);
 
 	docRoom->addItem(docWindow);
 	docRoom->addItem(docBed);
@@ -82,7 +88,12 @@ int main() {
 	kitchen->addItem(Chef);
 	kitchen->addItem(knives);
 
+	lawyerRoom->addPerson(Lawyer);
+
+	ceoRoom->addPerson(CEO);
+
 	butRoom->lock();
+	lawyerRoom->lock();
 		
 	Player* player = new Player(detRoom);
 
@@ -142,6 +153,9 @@ int main() {
 			}
 			if (found == true) {
 				cout << items.at(foundAt)->getDescription() << endl;
+				if (items.at(foundAt)->getName() == "Knives") {
+
+				}
 			}
 			else {
 				cout << "You did not see anything useful\n" << endl;
@@ -299,7 +313,12 @@ int main() {
 						cout << "NW: ";
 						break;
 					} 
-					cout << door->getName() << endl;
+					if (door->isDiscovered()) {
+						cout << door->getName() << endl;
+					}
+					else {
+						cout << "???" << endl;
+					}
 				}
 			}
 			cout << "\n";

@@ -12,7 +12,7 @@ protected:
 	string description;
 
 public:
-	Item() {};
+	Item() { furniture = true; key = false; };
 	Item(string n, string d, bool f);
 	Item(string n, string d, bool f, bool k);
 	bool isFurniture();

@@ -1,6 +1,4 @@
 #include "Room.h"
-#include "Direction.h"
-#include "Person.h"
 #include <vector>
 using namespace std;
 
@@ -33,6 +31,16 @@ Room::Room(string n, string d) {
 	}
 }
 
+Room::Room(string n, string d, bool di) {
+	this->name = n;
+	this->description = d;
+	this->discovered = di;
+
+	for (int i = 0; i < 8; i++) {
+		doors[i] = nullptr;
+	}
+}
+
 void Room::setDescription(string d) {
 	this->description = d;
 }
@@ -40,6 +48,14 @@ void Room::setDescription(string d) {
 void Room::link(Room* roomToLink, Direction d) {
 	this->doors[d] = roomToLink;
 	roomToLink->doors[(d + 4) % 8] = this;
+}
+
+void Room::setDiscovered() {
+	this->discovered = true;
+}
+
+bool Room::isDiscovered() {
+	return this->discovered;
 }
 
 void Room::setKey(Item* key) {

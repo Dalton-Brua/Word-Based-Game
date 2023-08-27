@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "Item.h"
 #include "Person.h"
 #include "Direction.h"
 using namespace std;
@@ -15,14 +14,18 @@ class Room {
 	vector<Person*> people;
 
 	bool locked = false;
+	bool discovered = false;
 
 
 public:
 	Room* doors[8];
 
 	Room(string name, string description);
+	Room(string name, string description, bool discovered);
 	void setDescription(string description);
 	void link(Room* dest, Direction d);
+	void setDiscovered();
+	bool isDiscovered();
 	Room* getDoor(Direction d);
 	void addItem(Item* item);
 	void removeItem(int index);
